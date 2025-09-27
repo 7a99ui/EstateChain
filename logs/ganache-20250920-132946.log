@@ -1820,3 +1820,5 @@
 [2025/09/20 13:45:32.372] - eth_getTransactionCount
 [2025/09/20 13:45:32.376] - eth_getBalance
 [2025/09/20 13:45:32.381] - eth_getTransactionCount
+[2025/09/20 13:57:11.534] - eth_unsubscribe
+[2025/09/20 13:57:11.537] - eth_unsubscribe

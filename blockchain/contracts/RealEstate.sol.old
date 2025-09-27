@@ -1,4 +1,3 @@
-// contracts/RealEstate.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
@@ -6,13 +5,13 @@ contract RealEstate {
     struct Transaction {
         address buyer;
         uint date;
-        uint price; // en wei
+        uint price; // prix en wei
     }
 
     struct Property {
         uint id;
         string location;
-        uint price; // en wei
+        uint price; // prix en wei
         address owner;
         bool forSale;
         Transaction[] transactions;
@@ -55,11 +54,10 @@ contract RealEstate {
 
     function setForSale(uint _id, uint _priceWei) public {
         require(_id > 0 && _id <= propertyCount, "Property does not exist");
-        Property storage prop = properties[_id];
-        require(prop.owner == msg.sender, "Vous n'etes pas le proprietaire");
+        require(properties[_id].owner == msg.sender, "Vous n'etes pas le proprietaire");
 
-        prop.forSale = true;
-        prop.price = _priceWei;
+        properties[_id].forSale = true;
+        properties[_id].price = _priceWei;
 
         emit PropertyForSale(_id, _priceWei);
     }
@@ -69,13 +67,11 @@ contract RealEstate {
         Property storage prop = properties[_id];
 
         require(prop.forSale, "Bien non disponible a la vente");
-        require(msg.value == prop.price, "Montant incorrect"); // comparer directement en wei
+        require(msg.value == prop.price, "Montant incorrect"); // prix déjà en wei
 
         address previousOwner = prop.owner;
         if (previousOwner != address(0)) {
-            // ⚡ utiliser call au lieu de transfer
-            (bool sent, ) = previousOwner.call{value: msg.value}("");
-            require(sent, "Le paiement au proprietaire a echoue");
+            payable(previousOwner).transfer(msg.value);
         }
 
         prop.owner = msg.sender;
