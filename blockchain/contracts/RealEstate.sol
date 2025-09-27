@@ -73,7 +73,7 @@ contract RealEstate {
 
         address previousOwner = prop.owner;
         if (previousOwner != address(0)) {
-            // ⚡ utiliser call au lieu de transfer
+            
             (bool sent, ) = previousOwner.call{value: msg.value}("");
             require(sent, "Le paiement au proprietaire a echoue");
         }

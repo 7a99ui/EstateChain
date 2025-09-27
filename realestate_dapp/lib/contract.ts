@@ -374,14 +374,7 @@ export class RealEstateContract {
     if (!this.contract) throw new Error("Contract not initialized")
     try {
       const result = await this.contract.getProperty(propertyId)
-      // Contract returns: (uint256, string, uint256, address, bool)
-      /*return {
-        id: Number(result[0]),
-        location: result[1],
-        price: ethers.formatEther(result[2]),
-        owner: result[3],
-        forSale: result[4],
-      }*/
+
       
 
 
@@ -542,67 +535,6 @@ async getTransactionHistory(propertyId?: number): Promise<Transaction[]> {
 }
 
 
-
-
-  /*
-  async getTransactionHistory(propertyId?: number): Promise<Transaction[]> {
-    if (!this.contract || !this.provider) throw new Error("Contract not initialized")
-    try {
-      const transactions: Transaction[] = []
-
-      if (propertyId !== undefined) {
-        const history = await this.contract.getTransactionHistory(propertyId)
-        for (let i = 0; i < history.length; i++) {
-          const tx = history[i]
-          transactions.push({
-            buyer: tx.buyer,
-            date: Number(tx.date) || 0,
-            price: tx.price ? ethers.formatEther(tx.price) : "0",
-            propertyId,
-            type: i === 0 ? "creation" : "purchase",
-          })
-        }
-      } else {
-        const latestBlock = await this.provider.getBlockNumber()
-        const fromBlock = Math.max(0, latestBlock - 1000)
-
-        const addedFilter = this.contract.filters.PropertyAdded()
-        const addedEvents = await this.contract.queryFilter(addedFilter, fromBlock, latestBlock)
-        for (const event of addedEvents) {
-          const args = event.args
-          const block = await this.provider.getBlock(event.blockNumber)
-          transactions.push({
-            buyer: "Notary",
-            date: block?.timestamp || 0,
-            price: args?.price ? ethers.formatEther(args.price) : "0",
-            propertyId: Number(args?.id || 0),
-            txHash: event.transactionHash,
-            type: "creation",
-          })
-        }
-
-        const soldFilter = this.contract.filters.PropertySold()
-        const soldEvents = await this.contract.queryFilter(soldFilter, fromBlock, latestBlock)
-        for (const event of soldEvents) {
-          const args = event.args
-          const block = await this.provider.getBlock(event.blockNumber)
-          transactions.push({
-            buyer: args?.newOwner || "",
-            date: block?.timestamp || 0,
-            price: args?.price ? ethers.formatEther(args.price) : "0",
-            propertyId: Number(args?.id || 0),
-            txHash: event.transactionHash,
-            type: "purchase",
-          })
-        }
-      }
-
-      return transactions.sort((a, b) => b.date - a.date)
-    } catch (error) {
-      console.error("[v0] Error getting transaction history:", error)
-      return []
-    }
-  }*/
 
   async isNotary(): Promise<boolean> {
     if (!this.contract || !this.signer) return false
